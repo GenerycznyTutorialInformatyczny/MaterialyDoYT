@@ -44,14 +44,19 @@ unsigned int factorial(unsigned int x){
 }
 
 
-bool is_equal_to_sum_of_factorials(unsigned int x){
-	unsigned int x_c = x;
+unsigned int sum_of_factorials(unsigned int x){
 	unsigned int sum = 0;
-	while(x_c > 0){
-		sum += tgamma(x_c%10 + 1); // https://en.wikipedia.org/wiki/Gamma_function
-		x_c/=10;
+	while(x > 0){
+		sum += tgamma(x_c%10 + 1); 
+		// funkcja gamma to w zasadzie silnia przesunięta o 1 w prawo,
+		// z wartościami zdefiniowanymi dla liczb ujemnych i ułamkowych
+		// w tym momencie bierzemy jednak pod uwagę tylko l. naturalne,
+		// gdzie zachowuje się właśnie jak [rzesunięta silnia
+		// https://en.wikipedia.org/wiki/Gamma_function
+		// https://www.cplusplus.com/reference/cmath/tgamma/
+		x/=10;
 	}
-	return sum == x;
+	return sum;
 }
 
 // Jest udowodnione, że wspólny podzielnik a i b jest też podzielnikiem a%b
@@ -65,10 +70,11 @@ bool is_equal_to_sum_of_factorials(unsigned int x){
 // a%b % b%a i b%a % (a%b % b%a)
 unsigned int GCD(unsigned int a, unsigned int b){
 	while(b!=0){
-		unsigned int c = a%b;
-		unsigned int a = b;
-		unsigned int b = c;
+		c = a%b;
+		a = b;
+		b = c;
 	}
+	return a;
 }
 // Można to uprościć do rekurencji
 // Na której nawet więcej lepiej jak to działa
@@ -97,7 +103,7 @@ int main(){
 		if(is_power_of_3v2(a)) ++num_of_3_pows;
 		
 		//Zadanie 2
-		if(is_equal_to_sum_of_factorials(a)) odp_zad_2 << a;
+		if(sum_of_factorials(a) == a) odp_zad_2 << a;
 		
 		
 		//Zadanie 3
