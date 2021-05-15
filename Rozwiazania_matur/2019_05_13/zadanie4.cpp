@@ -47,7 +47,7 @@ unsigned int factorial(unsigned int x){
 unsigned int sum_of_factorials(unsigned int x){
 	unsigned int sum = 0;
 	while(x > 0){
-		sum += tgamma(x_c%10 + 1); 
+		sum += tgamma(x%10 + 1); 
 		// funkcja gamma to w zasadzie silnia przesunięta o 1 w prawo,
 		// z wartościami zdefiniowanymi dla liczb ujemnych i ułamkowych
 		// w tym momencie bierzemy jednak pod uwagę tylko l. naturalne,
@@ -59,6 +59,7 @@ unsigned int sum_of_factorials(unsigned int x){
 	return sum;
 }
 
+// Algorytm MWD (Największy wspólny dzielnik) Euklidesa - wersja modulo
 // Jest udowodnione, że wspólny podzielnik a i b jest też podzielnikiem a%b
 // Liczymy takie a%b i b%a na zmianę, redukując na zmianę liczby a i b do ich reszt z 
 // dzielenia przez siebie
@@ -70,7 +71,7 @@ unsigned int sum_of_factorials(unsigned int x){
 // a%b % b%a i b%a % (a%b % b%a)
 unsigned int GCD(unsigned int a, unsigned int b){
 	while(b!=0){
-		c = a%b;
+		unsigned int c = a%b;
 		a = b;
 		b = c;
 	}
@@ -93,7 +94,6 @@ int main(){
 	
 	unsigned int a = 0;
 	unsigned int num_of_3_pows = 0;
-	
 	
 	vector<unsigned int> z3;
 	
@@ -133,8 +133,7 @@ int main(){
 	unsigned int long_sequence_len = 0;
 	unsigned int long_sequence_beg_numb = 0;
 	
-	int i = 2;
-	while(i < z3.size()){
+	for(int i = 2; i < z3.size(); i++){
 		if(cur_sequence_GCD != 1){ // sytuacja, kiedy pierwsze dwa elementy mają podzielnik większy niż 1
 			unsigned int this_it_GCD = GCD_rec(cur_sequence_GCD, z3[i]);
 			if(this_it_GCD == cur_sequence_GCD){ // kontynacja ciągu
@@ -157,20 +156,19 @@ int main(){
 				// Sprawdzamy 3 i 60 ma wspólny dzielnik 3
 				// Cofamy się aż do 30
 				// i później idziemy od 3 w prawo do 12
+				// krok po kroku:
 				
-				
-				// 
-				if(cur_sequence_GCD != 1){
+				if(cur_sequence_GCD != 1){ // Sprawdzam czy jest sens się cofać
 					cur_sequence_beg_numb = z3[i-1]; // ustawiam nowy możliwy początek sekwencji
+					// (wiem że ta liczba na pewno ma jakieś NWD >1 z obecną liczbą)
 					
 					int j = i-2; // wiemy że obecny i poprzedni mają jakiś wspólny dzielnik inny niż 
-					// właśnie ukończona sekwencja, więc wystarczy żeby iść od i-2
+					// właśnie ukończona sekwencja i 1, więc wystarczy żeby iść od i-2
 					
 					this_it_GCD = GCD_rec(cur_sequence_GCD, z3[j]);
-					
-					while(this_it_GCD != cur_sequence_GCD and j > 0){
+					while(this_it_GCD == cur_sequence_GCD and j > 0){
 						// jeżeli kolejne poprzednie liczby też mają ten sam dzielnik to sekwencję 
-						// trzeba wydłużać "w tył"
+						// trzeba wydłużać "w tył":
 						cur_sequence_beg_numb = z3[j];
 						j--;
 						this_it_GCD = GCD_rec(cur_sequence_GCD, z3[j]);
@@ -200,9 +198,7 @@ int main(){
 			// nowy początek sekwencji
 			cur_sequence_GCD = GCD_rec(z3[i-1], z3[i]);
 			cur_sequence_beg_numb = z3[i-1];
-		}		
-				
-		i++;		
+		}				
 	}
 	
 	if(cur_sequence_len>long_sequence_len){ // sprawdzenie czy ostatnia sekwencja nie jest tą najdłuższą
