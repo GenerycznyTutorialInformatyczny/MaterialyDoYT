@@ -7,6 +7,7 @@
 
 using namespace std;
 
+//Zadanie 2
 
 // Idea tej funkcji opiera się na przeiterowaniu po słowie i:
 // 1) sprawdzenie czy danej litery nie ma już w pewnym wektorze
@@ -57,6 +58,8 @@ int num_diff_letters3(string word){
 	set<char> letters(word.begin(), word.end());// tworzę seta
 	return letters.size();// zwracam długość seta
 }
+
+//Zadanie 3
 
 // funkcja opiera się na kodzie ASCII. Każda liter ma przyporządkowany numer w kodzie ASCII.
 // Aby taki kod uzyskać trzeba zamienić chara na inta. Jako że liczby w kodzie ASCII idą "po kolej"
