@@ -121,7 +121,7 @@ int main(){
 	ostringstream z1; // Wirtualny bufor do którego będę zapisywać kolejne słowa
 	// można użyć zamiast niego wektora czy tablicy
 	
-	unsigned int i = 1;// potrzebuję iteratora który będzie liczył słowa. 
+	int i = 1;// potrzebuję iteratora który będzie liczył słowa. 
 	// Możliwe że trzeba będzie trochę poeksperymentować, czy w CKE liczą od 0 czy od 1
 	
 	// Zadanie 2
@@ -141,9 +141,10 @@ int main(){
 				z1 << s[9]; // bierzemy 10 literę
 				
 				// Jeżeli mielibyśmy szczególnie dużo słów w pliku tutaj możnaby zrestować iterator:
-				int i = 0;
+				i = 0;
 				// Nie jest to jednak potrzebne. Gdyby iterator był resetowany możnaby także zastosować jakiegoś 
-				// short short inta albo innego unsigned int8 któy trzyma liczby od 0 - 256, aby zoptymalizować kod.
+				// "mniejszego" inta, np int8 który tryma liczby od -128 do 127 albo w ogóle uint8 któy trzyma liczby od 0 - 256, aby zoptymalizować kod. Typy te są 
+				// jednak zdefiniowane dopiero w wersji kompilator 11, którego często na kompach maturalnych nie ma. (https://en.cppreference.com/w/cpp/types/integer)
 			}
 		}
 		
