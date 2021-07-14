@@ -4,6 +4,9 @@
 #include <vector>
 #include <algorithm>
 #include <set>
+#include <stdexcept>
+#include <string>
+
 
 using namespace std;
 
@@ -66,49 +69,49 @@ int num_diff_letters3(string word){
 // https://en.wikipedia.org/wiki/ASCII
 // trzeba poszukać litery o maksymalnym kodzie ascii i minimalnym i na końcu wystarczy je odjąć.
 int max_word_distance(string word){	
-	int max_letter = (int)word[0]; // Pierwsza litera jest początkową maksymalną i minimalną
-	int min_letter = (int)word[0]; // zamieniam chara na inta instrukcją (int), chociaż i bez tego kompilator też by się sam domyślił
+	int max_letter = static_cast<int>(word[0]); // Pierwsza litera jest początkową maksymalną i minimalną
+	int min_letter = static_cast<int>(word[0]); // zamieniam chara na inta instrukcją static_cast<int>, chociaż i bez tego kompilator też by się sam domyślił
+	// Istnieje także instrukcja (int)word[0]. Jest to instrukcja używana w starym języku C, która także działa w C++. 
+	// Nie kontroluje ona jednak zamienianych typów i kompilator będzie na siłę próbował dokonać konwersj typów których przekonwertować się nie da.
+	// static_cast takie sytuacje wychwyci i na nie nie pozwoli.
 	for(int i = 1; i<word.size(); i++){ // przechodzę po reszcie słowa
-		int asInt = (int)word[i]; // wyciągam kolejne litery jako inty z kodu ASCII
-		//DODATKOWY FRAGMENT:
-		// Widać że tu w danych wszystkie słowa są capsem
-		// ale przydałoby się tak czy siak kod udebiloodpornić
-		// 1. co jeżeli znak nie będzie literą?
-		// 2. co jeżeli fragment słowa będzie capsem fragment normalnie? Wtedy a i A będą oddalone o +- 32
-		// Co z tym można zrobić?
-		// Nie jest nic dokładnie zdefiniowane w zadaniu więc trzeba coś samemu wymyślić:
-		// a i A potraktuję jako to samo, czyli trzeba wszystkie małe litery zamienić na duże
-		// jeżeli będzie coś co nie jest literą to niech zostanie przez program olane
-		
-		if(asInt >= (int)'a' and asInt <= (int)'z') asInt = asInt + (int)'A' - (int)'a'; // jeżeli jest mała literka, zamieniam ją na dużą
-		// oczywiście jakby się komuś chciało to można autentyczne wartości z kodu ascii wpisać, zamiast zamieniać za każdym razem
-		
-		if(asInt >= (int)'A' and asInt <= (int)'Z'){
-			// jedynie niestety w sytuacji kiedy będą same dziwne znaki, zwróci na pewno 0. Możnaby się przed czymś takim zabezpieczyć 
-			// przed samym zwracaniem na końcu funkcji
-		
-			// KONIEC DODATKOWEGO FRAMGMENTU
-			if(asInt < min_letter) min_letter = asInt; // i sprawdzam czy są mniejsze niż min, większe niż maks i podstawiam jeżeli tak
-			if(asInt > max_letter) max_letter = asInt;
-		}
+		int asInt = static_cast<int>(word[i]); // wyciągam kolejne litery jako inty z kodu ASCII
+		if(asInt < min_letter) min_letter = asInt; // i sprawdzam czy są mniejsze niż min, większe niż maks i podstawiam jeżeli tak
+		if(asInt > max_letter) max_letter = asInt;
 	}
-	// DODATKOWY FRAGMENT 2
-	// w sytuacji kiedy wszystkie litery nie są literami (opisana powyżej):
-	if(min_letter < (int)'A') return -1;
-	if(max_letter > (int)'Z') return -1;
-	// Zwracam -1. Jest to oznaka że jest jakiś błąd.
-	// Można to sprawdzić na wiele sposobów, ale taka metoda pozwala wychwycić też inne nieprzewidziane przez nas błędy
-	// generalnie nie sprawdzamy tylko warunku "wszystkie zaki są nie-literami"
-	// ale bardziej generalny warunek: "na wyjście przeszła jakakolwiek znak nie będący literą".
-	// lepsze zamiast return -1 byłoby:
-	// throw invalid_argument("out char out of letter range!");
-	// ale to jest rochę bardziej zaawansowana technika
-	// Możnaby także rzucić jakiegoś error kiedy jakimś cudem max będzie mniejszy od min:
-	if(max_letter <  min_letter) return -1;
-	// Takie zabezpieczanie, zwłaszcza (w przyszłości) z użyciem throw pozwala dużo lepiej wychwytywać
-	// i poprawnie interpretować dziwne zachowanie programu
-	// KONIEC DODATKOWEGO FRAGMENTU 2
 	return max_letter - min_letter; // zwracam róznicę
+}
+
+
+// dokładnie ta sama funkcja, jedynie ulepszone
+// Nie zostało podane co robić jeżeli trafi się w słowie coś innego niż duża litra.
+// Nie mniej powinno się takie zabezpieczenie dodać, zwłaszcza jak pisze się "praktyczny" program.
+int max_word_distance2(string word){
+	// Dodaję sprawdzenie czy nie ma żadnych znaków nie będących literami.
+	// Polecenie nie definiuje co w takiej sytuacji trzeba robić, bo w teroii taka sytuacja nie powinna zajść
+	// Ja jednak dointrpretowywuję, że jeżeli się coś takiego zdarzy to ma zwrócić błąd
+	for(int i = 0; i<word.size(); i++){ // iteruję po słowie
+		// sprawdzam funkcją isalpha czy char jest literą alfabetu.
+		// isalpha przyjmuje tylko unsigned char, a operator [] zwraca "zwyczajny" char.
+		// Dlatego należy dokonać konwersji (tak samo jak dokonywaliśmy konwersji char -> int).
+		// Konwersja w tym przypadku jest o tyle ważna, że podawanie chara do tej funkcji jest 
+		// zachowaniem niezdefiniowanym. Oznacza to że w zależności od kompilatora może to działać lub nie.
+		// https://en.cppreference.com/w/cpp/string/byte/isalpha
+		if(!isalpha(static_cast<unsigned char>(word[i]))) throw invalid_argument("non alphabetical character in string!");
+		// Jeżeli trafi się jakikolwiek znak nie będący literą program ma rzucić błąd. Jest to zaawansowana "forma" instrukcji return
+		// używana w przypadku, gdy chcemy zwrócić błąd.
+		// Można zamiast tego dać return -1, jednak może to prowadzić do dalszych błędów.
+		// https://en.cppreference.com/w/cpp/error/invalid_argument
+		
+		
+		// kolejna modyfikacja to pojawienie się małych liter, które będą po prostu zamienione na duże.
+		// Dokonuję takiego samego casta jak w przypadku isalpha, z dokłądnie tego samego powodu.
+		// Funkcja toupper zwróci dużą literę jeżeli została podana mała, lub znak który został podany jeżeli ten znak małą literą nie jest.
+		// dalej dokonuję zamiany na char, i wstawiam na "swoje" miejsce do stringa
+		word[i] = static_cast<char>(toupper(static_cast<unsigned char>(word[i])));
+	}
+	//dalej po prostu wywołuję starą funkcję ponieważ już się nic więcej nie zmienia	
+	return max_word_distance(word);
 }
 
 int main(){
@@ -159,7 +162,7 @@ int main(){
 		}
 		
 		// Zadanie 3
-		if(max_word_distance(s) <= 10) z3 << s << endl;
+		if(max_word_distance2(s) <= 10) z3 << s << endl;
 	}
 	
 	odp << "zadanie 1" << endl;
