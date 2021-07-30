@@ -57,9 +57,8 @@ int main(){
 		if(!(isdigit(static_cast<unsigned char>(value)) or isalpha(static_cast<unsigned char>(value))))
 			throw invalid_argument("non alphabetical or numerical character in instruction value!");
 		
-		// i jeżeli jest literą podnoszę ją do dużej:
-		if(isalpha(static_cast<unsigned char>(value)))
-			value = static_cast<char>(toupper(static_cast<unsigned char>(value)));
+		// i jeżeli jest literą podnoszę ją do dużej (toupper olewa nie-litery):
+		value = static_cast<char>(toupper(static_cast<unsigned char>(value)));
 		
 		// jeżeli cokolwiek się nie zgadza, rzucam wyjąek
 		// (Wytłumaczone w 2018 zadanie 3)
