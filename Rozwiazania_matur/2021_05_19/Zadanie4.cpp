@@ -23,7 +23,7 @@ int main(){
 	// Zadanie 3
 	// Tablica do sortowania kubełkowego
 	// 26 - ilość liter w alfabecie
-	int z2[26] = {0};
+	int z3[26] = {0};
 	
 	
 	/////////////////
@@ -90,7 +90,7 @@ int main(){
 			// zamieniamy instrukcją static_cast<int> chara na inta, ponieważ jest to duża litera, będzie z zakresu 65 - 90. 
 			// Odejmuje 65 aby 'A' było równe 0, 'B' - 1 itd. Podnoszę tą wartość w tablicy o 1. Jest to sortowanie kubełkowe.
 			// Teraz wartość każdego "kubełka" jest równa ilości takich liter dopisywanych do ciągu
-			z2[static_cast<int>(value)-65]++;
+			z3[static_cast<int>(value)-65]++;
 		}
 
 	}
@@ -114,11 +114,11 @@ int main(){
 	// max_element przyjmuje wskaźnik na początek i koniec zakresu, a zwraca wskaźnik na element o maksymalnej wartości
 	// sizeof(z2)/sizeof(z2[0]) jest długością tablicy. sizeof(z2) da długość całej tablicy w bajtach. Podzielone przez sizeof(z2[0]), czyli
 	// długość (w bajtach) jednego elementu, da ilość elementów tablicy. (W cpp każdy element zbioru ma taki sam rozmiar!)
-	int* max_elem_pointer = max_element(z2, z2+sizeof(z2)/sizeof(z2[0]));
+	int* max_elem_pointer = max_element(z3, z3+sizeof(z3)/sizeof(z3[0]));
 	// distance oblicza odległość między wskaźnikami - da nam to pozycję w tablicy, z której można "odzyskać" literę.
-	int max_elem_pos = distance(z2, max_elem_pointer);
+	int max_elem_pos = distance(z3, max_elem_pointer);
 	// Odzyskuję literę i odwołuję się do odpowiedniego indeksu.
-	cout << static_cast<char>(max_elem_pos+65) << " dodawane "<< z2[max_elem_pos] << " razy";
+	cout << static_cast<char>(max_elem_pos+65) << " dodawane "<< z3[max_elem_pos] << " razy";
 	// Należy jednak pamiętać, że w sytuacji kiedy będzie więcej "maksów" program bierze pierwszą literę z alfabetu.
 	// Oznacza to że w przypadku braku instrukcji dopisz wypisze że A zostało dopisane 0 razy. Co technicznie wg. mnie jest poprawnym wynikiem.
 	
