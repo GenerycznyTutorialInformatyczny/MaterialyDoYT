@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <stdexcept>
 
 using namespace std;
 
@@ -14,10 +15,10 @@ int main(){
 	
 	// Zadanie 2
 	// najdłuższy ciąg takich samych wartości
-	int z1_it = 1;
-	string z1_last_type = "";
-	int z1_max = 1;
-	string z1_max_type = "";
+	int z2_it = 1;
+	string z2_last_type = "";
+	int z2_max = 1;
+	string z2_max_type = "";
 	
 	// Zadanie 3
 	// Tablica do sortowania kubełkowego
@@ -37,21 +38,52 @@ int main(){
 		char value = instr[pos+1]; // uwyciągam kolejną literę za spacją
 		// Pod type mamy teraz typ instrukcji a pod value zostaje mi "końcówka" (wartość) instrukcji
 		
+		/////////////////////////
+		// W tym miejscu można by dodać dodatkowe zabezpieczenia:
+		// (dla bardziej zaawansowanych, można pominąć)
+		
+		// Sprawdzam czy wszystkie znaki w "typie" instrukcji są literami i jeżeli trafi się mała litera to zamieniam ją na dużą
+		for(int i = 0; i<type.size(); i++){
+			// https://en.cppreference.com/w/cpp/string/byte/isalpha
+			if(!isalpha(static_cast<unsigned char>(type[i]))) 
+				throw invalid_argument("non alphabetical character in instruction type!");
+			// https://en.cppreference.com/w/cpp/error/invalid_argument
+			
+			//https://en.cppreference.com/w/cpp/string/byte/toupper
+			type[i] = static_cast<char>(toupper(static_cast<unsigned char>(type[i])));
+		}
+		
+		// sprawdzam czy "wartość" instrukcji jest literą albo cyfrą
+		if(!(isdigit(static_cast<unsigned char>(value)) or isalpha(static_cast<unsigned char>(value))))
+			throw invalid_argument("non alphabetical or numerical character in instruction value!");
+		
+		// i jeżeli jest literą podnoszę ją do dużej:
+		if(isalpha(static_cast<unsigned char>(value)))
+			value = static_cast<char>(toupper(static_cast<unsigned char>(value)));
+		
+		// jeżeli cokolwiek się nie zgadza, rzucam wyjąek
+		// (Wytłumaczone w 2018 zadanie 3)
+		
+		// Możnaby jeszcze dodać kontrolę czy ktoś nie podał np. DOPISZ 1, albo USUN R,
+		// Ponieważ teraz takie instrukcje przejdą, a są nieporawne.
+		
+		//////////////////////////
+		
 		
 		
 		// Zadanie 2
 		// standardowe szukanie najdłuższego ciągu tych samych wartości
 		// jeżeli poprzednia instrukcja jest taka sama jak ta, zwiększ iterator
-		if(type == z1_last_type){
-			z1_it++;
+		if(type == z2_last_type){
+			z2_it++;
 		}
 		else{// jeżeli nastąpiła zmiana instrukcji
-			if(z1_it > z1_max){ // jeżeli obecny ciąg był najdłuższy
-				z1_max = z1_it; // podmień wartości maksymalne
-				z1_max_type = z1_last_type;
+			if(z2_it > z2_max){ // jeżeli obecny ciąg był najdłuższy
+				z2_max = z2_it; // podmień wartości maksymalne
+				z2_max_type = z2_last_type;
 			}
-			z1_it = 1; // zresetuj iterator
-			z1_last_type = type; // i typ
+			z2_it = 1; // zresetuj iterator
+			z2_last_type = type; // i typ
 		}
 		
 		// Zadanie 3
@@ -70,12 +102,12 @@ int main(){
 	
 	// Zadanie 2
 	// Jeszcze trzeba sprawdzić czy ostatni ciąg nie był tym najdłuższym
-	if(z1_it > z1_max){
-		z1_max = z1_it;
-		z1_max_type = z1_last_type;
+	if(z2_it > z2_max){
+		z2_max = z2_it;
+		z2_max_type = z2_last_type;
 	}
 
-	cout << z1_max_type << " (" << z1_max << " razy)"  << endl;
+	cout << z2_max_type << " (" << z2_max << " razy)"  << endl;
 	
 	// Zadanie 3
 	
@@ -87,7 +119,9 @@ int main(){
 	// distance oblicza odległość między wskaźnikami - da nam to pozycję w tablicy, z której można "odzyskać" literę.
 	int max_elem_pos = distance(z2, max_elem_pointer);
 	// Odzyskuję literę i odwołuję się do odpowiedniego indeksu.
-	cout << static_cast<char>(max_elem_pos+65) << " dodawane "<< z2[max_elem_pos];
+	cout << static_cast<char>(max_elem_pos+65) << " dodawane "<< z2[max_elem_pos] << " razy";
+	// Należy jednak pamiętać, że w sytuacji kiedy będzie więcej "maksów" program bierze pierwszą literę z alfabetu.
+	// Oznacza to że w przypadku braku instrukcji dopisz wypisze że A zostało dopisane 0 razy. Co technicznie wg. mnie jest poprawnym wynikiem.
 	
 	// Zadanie 4
 	// TODO
