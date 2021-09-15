@@ -31,7 +31,7 @@ int main(){
 	
 	vector< vector<int> > image; // zmienna przechowująca cały obrazek
 	
-	int incoming_num = 0; // pojedyncza liczba
+	int num = 0; // pojedyncza liczba
 	vector<int> line; // cała jedna linia
 	int i = 0; // licznik pozycji w jednej linii
 	
@@ -41,15 +41,15 @@ int main(){
 	//Zadanie 2
 	int z2 = 0;
 	
-	while(dane >> incoming_num){
-		line.push_back(incoming_num); // zapisujemy dane do linii
+	while(dane >> num){
+		line.push_back(num); // zapisujemy dane do linii
 		i++;
 		
 		// Zadanie 1
 		// klasyczne szukanie wartości maksymalnej i minimalnej
 		// linijka w której sięznajdujemy nas nie obchodzi, wystarczą same liczby
-		if(incoming_num > z_1brigtest) z_1brigtest = incoming_num;
-		if(incoming_num < z_1darkest) z_1darkest = incoming_num;
+		if(num > z_1brigtest) z_1brigtest = num;
+		if(num < z_1darkest) z_1darkest = num;
 		
 		if(i == 320){ // kiedy licznik wskaże 320  jest koniec lini
 			// Zadanie 2
